@@ -1,10 +1,11 @@
 import {axiosInstance, getApi} from "../axiosInstance";
 import {useQuery} from "react-query";
 import {queryKeys} from "../react-query/constants";
+import {useSearchParams} from "react-router-dom";
+import {useState} from "react";
 
 const getPhotos = async (params: any) => {
-    const {data} = await axiosInstance.get(
-        'https://pixabay.com/api',
+    const {data} = await axiosInstance(
         {
             params: {
                 key: getApi(process.env.REACT_APP_PIXABAY_KEY),
@@ -16,14 +17,20 @@ const getPhotos = async (params: any) => {
     return data;
 }
 
-export const usePhotos = (params: any) => {
+export const usePhotos = () => {
+    const [searchParams] = useSearchParams();
+    const [params, setParams] = useState({
+        page: searchParams.get('page') || '1',
+        per_page: searchParams.get('limit') || '10'
+    });
+
     const fallback = {
         hits: [],
         total: 0,
         totalHits: 0
     };
 
-    const { data: photos = fallback, refetch } = useQuery(
+    const {data: photos = fallback, refetch} = useQuery(
         [queryKeys.photos, params],
         () => getPhotos(params),
         {
@@ -37,5 +44,5 @@ export const usePhotos = (params: any) => {
         }
     )
 
-    return { photos, refetch };
+    return {photos, refetch, params, setParams};
 }

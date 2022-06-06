@@ -1,1 +1,2 @@
-export const baseUrl = 'http://localhost:3030';
+export const baseUrl = process.env.REACT_APP_PIXABAY_API;
+

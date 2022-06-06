@@ -1,19 +1,11 @@
-import React, {useEffect, useState} from 'react';
-import {useSearchParams, useNavigate } from 'react-router-dom';
+import React from 'react';
+import {useNavigate} from 'react-router-dom';
 import {usePhotos} from "../hooks/usePhotos";
 import {Button, Image, Pagination, Table} from "antd";
 
 const Photos = () => {
     const navigate = useNavigate();
-    const [searchParams] = useSearchParams();
-    console.log(searchParams);
-
-    const [params, setParams] = useState({
-        page: searchParams.get('page') || '1',
-        per_page: searchParams.get('limit') || '10'
-    });
-
-    const {photos, refetch} = usePhotos(params);
+    const {photos, refetch, params, setParams} = usePhotos();
     const columns = [
         {
             title: '이미지',
@@ -40,7 +32,12 @@ const Photos = () => {
 
     return (
         <div>
-            <Table dataSource={photos.hits} columns={columns} pagination={false} />;
+            <Table
+                rowKey='id'
+                dataSource={photos.hits}
+                columns={columns}
+                pagination={false}
+            />
 
             <Pagination
                 showSizeChanger={true}
@@ -48,11 +45,10 @@ const Photos = () => {
                 defaultPageSize={parseInt(params.per_page)}
                 current={parseInt(params.page)}
                 total={photos.totalHits}
-                onChange={onPaginationChange}/>
+                onChange={onPaginationChange}
+            />
 
-            <Button
-                onClick={() => refetch()}
-            >
+            <Button onClick={() => refetch()}>
                 리페치 테스트
             </Button>
         </div>

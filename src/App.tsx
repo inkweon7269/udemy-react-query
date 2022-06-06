@@ -12,8 +12,8 @@ const App = () => {
     return (
         <BrowserRouter>
             <QueryClientProvider client={queryClient}>
-                <Photos/>
                 <Loading/>
+                <Photos/>
                 <ReactQueryDevtools/>
             </QueryClientProvider>
         </BrowserRouter>
